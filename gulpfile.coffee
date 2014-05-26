@@ -12,9 +12,14 @@ jade      = require 'gulp-jade'
 uglify    = require 'gulp-uglify'
 obfuscate = require 'gulp-obfuscate'
 
+onError = (err) ->
+  util.log util.colors.red 'stream error...'
+  util.log util.colors.red(JSON.stringify(err))
+  util.beep()
+
 gulp.task 'scripts', ->
   gulp.src 'app/**/*.coffee'
-    .pipe plumber()
+    .pipe plumber({errorHandler: onError})
     .pipe coffee bare: true
     .pipe concat 'app.js'
     #.pipe obfuscate()
@@ -23,20 +28,20 @@ gulp.task 'scripts', ->
 
 gulp.task 'templates', () ->
   gulp.src './app/templates/*.jade'
-    .pipe plumber()
+    .pipe plumber({errorHandler: onError})
     .pipe jade pretty: true
     .pipe gulp.dest 'public/templates/'
 
 gulp.task 'sass', () ->
   gulp.src('app/scss/*.scss')
-    .pipe plumber()
+    .pipe plumber({errorHandler: onError})
     .pipe sass()
     .pipe concat 'style.css'
     .pipe gulp.dest 'public/css/'
 
 gulp.task 'server', ->
   http.createServer(ecstatic({root: __dirname})).listen 8080
-  gulp-util.log gulp-util.colors.blue 'HTTP server listening on port 8080'
+  util.log util.colors.blue 'HTTP server listening on port 8080'
 
 gulp.task 'watch', ->
   gulp.watch 'app/**/*.*', ['compile']
