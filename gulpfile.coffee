@@ -9,12 +9,16 @@ http      = require 'http'
 ecstatic  = require 'ecstatic'
 sass      = require 'gulp-sass'
 jade      = require 'gulp-jade'
+uglify    = require 'gulp-uglify'
+obfuscate = require 'gulp-obfuscate'
 
 gulp.task 'scripts', ->
   gulp.src 'app/**/*.coffee'
     .pipe plumber()
     .pipe coffee bare: true
     .pipe concat 'app.js'
+    #.pipe obfuscate()
+    #.pipe uglify mangle:false
     .pipe gulp.dest 'public/'
 
 gulp.task 'templates', () ->
